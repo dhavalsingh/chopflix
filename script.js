@@ -1,5 +1,5 @@
 // Global variables
-const GEMINI_API_KEY = "ADD API KEY HERE"; // <-- IMPORTANT: REPLACE WITH YOUR ACTUAL API KEY
+const GEMINI_API_KEY_FALLBACK = "SAMPPLE KEY"; // Renamed for clarity, acts as a fallback
 
 let player; // YouTube player instance
 let recipeData = {}; // To store the recipe steps and other data from LLM
@@ -17,6 +17,10 @@ const servingsInput = document.getElementById('servings');
 const mainContent = document.querySelector('.main-content');
 const header = document.querySelector('header');
 const loadingMessageBelowButton = document.getElementById('loadingMessageBelowButton');
+const stepProgressContainer = document.getElementById('stepProgressContainer');
+const stepProgressText = document.getElementById('stepProgressText');
+const stepProgressBarInner = document.getElementById('stepProgressBarInner');
+const geminiApiKeyInput = document.getElementById('geminiApiKeyInput'); // Added
 
 // Initially hide the main content and show the centered header
 mainContent.classList.add('hidden');
@@ -128,6 +132,16 @@ function loadStep(stepIndex) {
 
     stepInstructionDisplay.innerHTML = `<p>${step.instruction || "No instruction for this step."}</p>`;
 
+    // Update Step Progress Bar
+    if (recipeData.steps && recipeData.steps.length > 0 && stepProgressContainer && stepProgressText && stepProgressBarInner) {
+        stepProgressText.textContent = `Step ${currentStepIndex + 1} of ${recipeData.steps.length}`;
+        const progressPercent = ((currentStepIndex + 1) / recipeData.steps.length) * 100;
+        stepProgressBarInner.style.width = `${progressPercent}%`;
+        stepProgressContainer.style.display = 'block';
+    } else if (stepProgressContainer) {
+        stepProgressContainer.style.display = 'none';
+    }
+
     if (player && typeof player.seekTo === 'function' && typeof player.playVideo === 'function') {
         const startTime = timeToSeconds(step.startTime);
         const endTime = timeToSeconds(step.endTime);
@@ -200,8 +214,28 @@ function updateNavigationButtons() {
 async function fetchRecipeFromLLM(youtubeUrl) {
     console.log("Fetching recipe for URL:", youtubeUrl);
 
-    if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY" || !GEMINI_API_KEY) {
-        alert("Please replace 'YOUR_GEMINI_API_KEY' in script.js with your actual Gemini API key.");
+    let userProvidedApiKey = geminiApiKeyInput.value.trim();
+    let apiKeyToUse;
+    let usingFallback = false;
+
+    if (userProvidedApiKey) {
+        apiKeyToUse = userProvidedApiKey;
+    } else {
+        apiKeyToUse = GEMINI_API_KEY_FALLBACK;
+        usingFallback = true;
+    }
+
+    let showAlert = false;
+    if (!apiKeyToUse) { 
+        showAlert = true;
+    } else if (apiKeyToUse === "YOUR_GEMINI_API_KEY") { 
+        showAlert = true;
+    } else if (usingFallback && apiKeyToUse === "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg") { // Check the specific placeholder only if it's the active fallback
+        showAlert = true;
+    }
+
+    if (showAlert) {
+        alert("Please enter a valid Google API Key in the input field, or ensure the fallback key in script.js is valid and not a placeholder.");
         return null;
     }
 
@@ -257,7 +291,7 @@ async function fetchRecipeFromLLM(youtubeUrl) {
 - If you cannot process the video or extract a valid recipe, set the "error" field in the response.`;
 
     const jsonStructureReminderServings = `
-Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable):
+Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable). Dont add any non english characters.IT is very important that the JSON is valid.:
 \\\`\\\`\\\`json
 {
   "recipeTitle": "(Extracted Recipe Name or Video Title)",
@@ -283,7 +317,7 @@ Remember, the JSON output *must* strictly follow this structure (do not add extr
 `;
 
     const jsonStructureReminderNoServings = `
-Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable):
+Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable) Dont add any non english characters. IT is very important that the JSON is valid.:
 \\\`\\\`\\\`json
 {
   "recipeTitle": "(Extracted Recipe Name or Video Title)",
@@ -328,7 +362,7 @@ ${jsonStructureReminderNoServings}
 `;
     }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=${GEMINI_API_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=${apiKeyToUse}`;
     
     const requestBody = {
         contents: [{
@@ -451,10 +485,21 @@ processUrlBtn.addEventListener('click', async () => {
     document.getElementById('ingredientsSection').style.display = 'none';
     document.getElementById('servingsNote').textContent = '';
     updateNavigationButtons();
+    // Hide progress bar initially when processing new URL
+    if (stepProgressContainer) {
+        stepProgressContainer.style.display = 'none';
+    }
+    if (stepProgressBarInner) {
+        stepProgressBarInner.style.width = '0%';
+    }
+    if (stepProgressText) {
+        stepProgressText.textContent = '';
+    }
 
     processUrlBtn.disabled = true;
     let funnyMessageIndex = 0;
-    processUrlBtn.textContent = funnyLoadingMessages[funnyMessageIndex];
+    processUrlBtn.innerHTML = `<span>${funnyLoadingMessages[funnyMessageIndex]}</span><span class="spinner"></span>`;
+
     if (loadingMessageBelowButton) {
         loadingMessageBelowButton.textContent = staticLoadingInfo.trim();
         loadingMessageBelowButton.style.display = 'block';
@@ -463,7 +508,12 @@ processUrlBtn.addEventListener('click', async () => {
     if (funnyMessageInterval) clearInterval(funnyMessageInterval);
     funnyMessageInterval = setInterval(() => {
         funnyMessageIndex = (funnyMessageIndex + 1) % funnyLoadingMessages.length;
-        processUrlBtn.textContent = funnyLoadingMessages[funnyMessageIndex];
+        const textSpan = processUrlBtn.querySelector('span:not(.spinner)');
+        if (textSpan) {
+            textSpan.textContent = funnyLoadingMessages[funnyMessageIndex];
+        } else {
+            processUrlBtn.innerHTML = `<span>${funnyLoadingMessages[funnyMessageIndex]}</span><span class="spinner"></span>`;
+        }
     }, 2000);
 
     try {
@@ -474,8 +524,9 @@ processUrlBtn.addEventListener('click', async () => {
             mainContent.classList.remove('hidden');
             header.classList.remove('centered-header');
             // Ensure the non-centered header layout is correct immediately
-            header.querySelector('.landing-text-column > h1').style.display = 'block'; // Or whatever your default is
+            //header.querySelector('.landing-text-column > h1').style.display = 'block'; // Or whatever your default is
              // The .input-area should now be hidden by CSS (display: none !important)
+            // LoadStep will handle showing the progress bar for the first step
         } else {
             stepInstructionDisplay.innerHTML = '<p>Could not fetch or parse recipe. Please check the URL or try again later.</p>';
             if (fetchedRecipe && fetchedRecipe.error) {
@@ -483,17 +534,19 @@ processUrlBtn.addEventListener('click', async () => {
             }
             mainContent.classList.add('hidden');
             header.classList.add('centered-header'); // Revert to landing page view
+            if (stepProgressContainer) stepProgressContainer.style.display = 'none'; // Hide on error
         }
     } catch (error) {
         console.error("Error processing URL:", error);
         stepInstructionDisplay.innerHTML = '<p>An error occurred. Please try again.</p>';
         mainContent.classList.add('hidden');
         header.classList.add('centered-header'); // Revert to landing page view
+        if (stepProgressContainer) stepProgressContainer.style.display = 'none'; // Hide on error
     } finally {
         // Stop funny messages
         if (funnyMessageInterval) clearInterval(funnyMessageInterval);
         processUrlBtn.disabled = false;
-        processUrlBtn.textContent = "Get Recipe Steps";
+        processUrlBtn.textContent = "Breakdown the Recipe!";
         if (loadingMessageBelowButton) {
             loadingMessageBelowButton.textContent = '';
             loadingMessageBelowButton.style.display = 'none';

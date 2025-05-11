@@ -19,8 +19,9 @@
                     <h1>Chopflix</h1>
                 </div>
                 <p class="landing-subtitle">Watch + Cook, one step at a time. <br>Auto-adjust ingredients if you change servings!</p>
-                <p class="landing-explanation">Paste any YouTube recipe link. Chopflix breaks it into steps, showing video clips and ingredients for each step, simplifying your kitchen adventures!</p>
+                <!-- <p class="landing-explanation">Tired of endlessly pausing and rewinding YouTube recipes? Wish you could see the chef's technique while reading the steps? Chopflix syncs video clips with instructions and ingredients for each step. The video plays just for that part, then pauses, letting you cook along effortlessly.</p> -->
                 <div class="input-area">
+                    <input type="password" id="geminiApiKeyInput" placeholder="Enter Google API Key">
                     <input type="text" id="youtubeUrl" placeholder="Paste Recipe YT Video Link">
                     <input type="number" id="servings" placeholder="Servings (Optional)" min="1">
                     <button id="processUrlBtn">Breakdown the Recipe!</button>
@@ -38,6 +39,12 @@
                     <div id="ingredientsSection" style="display: none;">
                         <h3>Ingredients</h3>
                         <ul id="ingredientsList"></ul>
+                    </div>
+                </div>
+                <div id="stepProgressContainer" style="display: none;">
+                    <span id="stepProgressText"></span>
+                    <div id="stepProgressBarOuter">
+                        <div id="stepProgressBarInner"></div>
                     </div>
                 </div>
                 <div id="servingsNote"></div>

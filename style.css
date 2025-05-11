@@ -108,6 +108,7 @@ header.centered-header .input-area {
 
 header.centered-header #youtubeUrl,
 header.centered-header #servings,
+header.centered-header #geminiApiKeyInput,
 header.centered-header button#processUrlBtn {
     width: 100%;
     padding: 15px 20px;
@@ -119,12 +120,14 @@ header.centered-header button#processUrlBtn {
 }
 
 header.centered-header #youtubeUrl::placeholder,
-header.centered-header #servings::placeholder {
+header.centered-header #servings::placeholder,
+header.centered-header #geminiApiKeyInput::placeholder {
     color: #a8b2bd;
 }
 
 header.centered-header #youtubeUrl:focus,
-header.centered-header #servings:focus {
+header.centered-header #servings:focus,
+header.centered-header #geminiApiKeyInput:focus {
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     outline: none;
@@ -136,6 +139,20 @@ header.centered-header button#processUrlBtn {
     font-weight: 500;
     border: none;
     cursor: pointer;
+    /* Added for spinner alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between text and spinner if they are direct children */
+}
+
+header.centered-header button#processUrlBtn .spinner {
+    width: 16px; /* Spinner size */
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Light border */
+    border-radius: 50%;
+    border-top-color: #ffffff; /* Prominent part of spinner */
+    animation: spin 0.8s linear infinite;
 }
 
 header.centered-header button#processUrlBtn:hover {
@@ -165,6 +182,18 @@ header:not(.centered-header) {
     flex-shrink: 0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     height: 50px;
+}
+
+/* Ensure logo is hidden in the non-centered header */
+header:not(.centered-header) .landing-logo {
+    display: none;
+}
+
+/* Reset specific styles for the wrapper in non-centered header if needed */
+header:not(.centered-header) .logo-title-wrapper {
+    margin-bottom: 0; /* Override margin from centered state */
+    display: flex; /* Keep it flex if h1 needs specific alignment within it */
+    align-items: center;
 }
 
 /* Use display:contents for the wrapper so h1 and .input-area are laid out as direct children of header */
@@ -438,4 +467,40 @@ header:not(.centered-header) button#processUrlBtn:hover {
         font-size: 0.95rem;
         padding: 12px 15px;
     }
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Step Progress Bar Styles */
+#stepProgressContainer {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+#stepProgressText {
+    display: block;
+    font-size: 0.9em;
+    color: #5a6b7b;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+#stepProgressBarOuter {
+    width: 100%;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#stepProgressBarInner {
+    height: 100%;
+    width: 0%; /* Initial width */
+    background-color: #4f46e5; /* Primary accent color */
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
 } 
