@@ -1,0 +1,441 @@
+/* === GLOBAL RESETS & BASE STYLES === */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f6f8; /* Light, neutral background */
+    color: #333;
+    overflow-x: hidden; /* Prevent horizontal scrollbars */
+    line-height: 1.5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure container takes at least full viewport height */
+    width: 100%;
+}
+
+/* === LANDING PAGE STYLES (when header has .centered-header) === */
+header.centered-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 40px 5%; /* Responsive padding */
+    background-color: #ffffff; /* Clean white background for landing */
+    gap: 40px;
+    overflow-y: auto; /* Allow scroll on very small screens */
+}
+
+header.centered-header .landing-text-column {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 600px;
+    padding-right: 30px;
+}
+
+header.centered-header .landing-image-column {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    align-self: stretch; /* Try to match height of text column if possible */
+    background-image: url('bg-image.png'); /* YOUR IMAGE */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 350px; /* Minimum height for the image area */
+}
+
+header.centered-header .logo-title-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Space below the logo+title group, before subtitle */
+}
+
+header.centered-header .landing-logo {
+    /* display: block; */ /* No longer needed as it's a flex item */
+    width: 60px; /* Adjust as needed - smaller for inline */
+    height: auto;
+    /* margin-bottom: 20px; */ /* Replaced by wrapper's margin and margin-right */
+    margin-right: 15px; /* Space between logo and title */
+}
+
+header.centered-header h1 {
+    font-size: clamp(2.8rem, 6vw, 4rem); /* Responsive font size */
+    font-weight: 700;
+    color: #2c3e50; /* Darker, more professional blue/grey */
+    /* margin: 0 0 15px 0; */ /* Original margin - bottom margin handled by wrapper now */
+    margin: 0; /* Remove other margins, rely on flex alignment */
+    line-height: 1.15;
+}
+
+header.centered-header .landing-subtitle {
+    display: block;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    color: #5a6b7b; /* Softer text color */
+    margin: 0 0 35px 0;
+    line-height: 1.6;
+}
+
+header.centered-header .landing-explanation {
+    display: block;
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem); /* Slightly smaller than subtitle */
+    color: #6a7885; /* A slightly lighter, more muted color */
+    margin: 0 0 30px 0; /* Space below it, before input area */
+    line-height: 1.55;
+    max-width: 580px; /* Consistent with text column */
+}
+
+header.centered-header .input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+header.centered-header #youtubeUrl,
+header.centered-header #servings,
+header.centered-header button#processUrlBtn {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 8px;
+    height: 52px;
+    font-size: 1rem;
+    border: 1px solid #dcdfe6; /* Lighter border */
+    transition: all 0.2s ease;
+}
+
+header.centered-header #youtubeUrl::placeholder,
+header.centered-header #servings::placeholder {
+    color: #a8b2bd;
+}
+
+header.centered-header #youtubeUrl:focus,
+header.centered-header #servings:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    outline: none;
+}
+
+header.centered-header button#processUrlBtn {
+    background-color: #4f46e5;
+    color: white;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+header.centered-header button#processUrlBtn:hover {
+    background-color: #4338ca;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Style for the loading message below the button */
+.loading-info-text {
+    font-size: 0.85em;
+    font-style: italic;
+    color: #5a6b7b; /* Softer text color, similar to subtitle */
+    margin-top: 8px; /* Space above this text */
+    width: 100%;
+    text-align: center; /* Center the text below the button */
+    display: none; /* Initially hidden, JS will show it */
+}
+
+/* === NORMAL HEADER STYLES (when header does NOT have .centered-header) === */
+header:not(.centered-header) {
+    padding: 0 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    height: 50px;
+}
+
+/* Use display:contents for the wrapper so h1 and .input-area are laid out as direct children of header */
+header:not(.centered-header) .landing-text-column {
+    display: contents;
+}
+
+header:not(.centered-header) .landing-subtitle,
+header:not(.centered-header) .landing-image-column {
+    display: none !important; /* Ensure these are hidden in normal header */
+}
+
+header:not(.centered-header) h1 {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+}
+
+header:not(.centered-header) .input-area {
+    display: none !important; /* This will hide the input area */
+}
+
+header:not(.centered-header) #youtubeUrl,
+header:not(.centered-header) #servings {
+    height: 22px;
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    background: white;
+    margin: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+header:not(.centered-header) #youtubeUrl {
+    max-width: 350px;
+    flex-grow: 1;
+}
+
+header:not(.centered-header) #youtubeUrl:focus,
+header:not(.centered-header) #servings:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+header:not(.centered-header) #servings {
+    max-width: 80px;
+    flex-grow: 0;
+}
+
+header:not(.centered-header) button#processUrlBtn {
+    height: 22px;
+    padding: 0 10px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    line-height: 22px; /* Vertically center text */
+}
+
+header:not(.centered-header) button#processUrlBtn:hover {
+    background: #4338ca;
+}
+
+/* === MAIN CONTENT AREA (Recipe Steps & Video) - ENHANCED UI === */
+.main-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    background-color: #f4f6f8;
+    height: calc(100vh - 50px); /* Explicit height: 100% viewport - header height */
+}
+
+.main-content.hidden {
+    display: none !important;
+}
+
+#recipeStepsContainer {
+    flex: 1 1 420px; /* Slightly increased flex-basis */
+    max-width: 550px; /* Slightly increased max-width */
+    min-width: 340px;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff; /* White panel for steps */
+    padding: 28px; /* Increased padding */
+    overflow-y: auto;
+    border-right: 1px solid #e0e0e0; /* Softer border */
+    box-shadow: 1px 0 5px rgba(0,0,0,0.03); /* Subtle shadow for separation */
+}
+
+#recipeStepsContainer h2 {
+    margin-top: 0;
+    margin-bottom: 25px; /* More space below heading */
+    font-size: 1.5em; /* Larger heading */
+    font-weight: 600;
+    color: #2c3e50; /* Consistent dark heading color */
+    flex-shrink: 0;
+}
+
+#currentStepDisplay {
+    background-color: #f9fafb; /* Light bg for the step card */
+    border: 1px solid #e7e9ec;
+    padding: 22px; /* Increased padding */
+    border-radius: 10px; /* Slightly more rounded */
+    margin-bottom: 25px; /* More space below */
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 1.05em; /* Slightly larger base font for instructions */
+    line-height: 1.65;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Soft shadow */
+}
+
+#stepInstruction {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #34495e; /* Slightly softer dark text */
+}
+
+#ingredientsSection {
+    margin-top: 20px; /* Consistent spacing */
+}
+
+#ingredientsSection h3 {
+    margin-bottom: 12px;
+    font-size: 1.2em; /* Adjusted size */
+    font-weight: 600;
+    color: #4f46e5; /* Primary accent color */
+}
+
+#ingredientsList {
+    margin: 0;
+    padding-left: 22px;
+    font-size: 0.98em;
+    color: #5a6b7b; /* Softer list text color */
+    list-style-type: disc; /* Ensure list style */
+}
+
+#ingredientsList li {
+    margin-bottom: 6px; /* Spacing between items */
+}
+
+#servingsNote {
+    margin-top: 22px;
+    color: #6c757d;
+    font-size: 0.9em;
+    text-align: left;
+    font-style: italic;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 25px;
+    flex-shrink: 0;
+    gap: 15px; /* Increased gap */
+}
+
+.navigation-buttons button {
+    flex: 1;
+    padding: 10px 15px; /* Consistent with landing page button proportions */
+    font-size: 0.95em;
+    font-weight: 500;
+    border-radius: 8px; /* Consistent rounding */
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: auto; /* Remove fixed height for these buttons */
+}
+
+/* Specific button styles (colors from existing, but ensure structure is consistent) */
+.navigation-buttons button#prevStepBtn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.navigation-buttons button#prevStepBtn:hover:not(:disabled) {
+    background-color: #5a6268;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.navigation-buttons button#nextStepBtn {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.navigation-buttons button#nextStepBtn:hover:not(:disabled) {
+    background-color: #4338ca;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.navigation-buttons button:disabled {
+    background-color: #9ca3af; /* Match global disabled button style */
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+#videoPlayerContainer {
+    flex: 2 1 60%;
+    background-color: #121212;
+    overflow: hidden;
+    min-width: 400px;
+    height: 100%; /* Should now take full height of the calculated .main-content height */
+    border: none;
+}
+
+#videoPlayerContainer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block; /* Ensure iframe behaves as a block element */
+}
+
+/* === RESPONSIVE ADJUSTMENTS FOR LANDING PAGE === */
+@media (max-width: 992px) { /* Tablet and smaller */
+    header.centered-header {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding-top: 60px; /* More space at top */
+        padding-bottom: 60px;
+    }
+
+    header.centered-header .landing-text-column {
+        align-items: center; /* Center text elements */
+        padding-right: 0;
+        max-width: 100%;
+        order: 2; /* Text below image */
+    }
+
+    header.centered-header .landing-image-column {
+        order: 1; /* Image above text */
+        max-width: 70%;
+        width: 100%; /* Allow it to shrink */
+        margin-bottom: 40px; /* Space between image and text */
+        min-height: 30vh; /* Use viewport height for responsiveness */
+        max-height: 400px;
+    }
+
+    header.centered-header .input-area {
+        max-width: 450px; /* Limit width of input area */
+    }
+}
+
+@media (max-width: 576px) { /* Mobile */
+    header.centered-header .landing-image-column {
+        max-width: 85%;
+        min-height: 25vh;
+        max-height: 300px;
+    }
+
+    header.centered-header #youtubeUrl,
+    header.centered-header #servings,
+    header.centered-header button#processUrlBtn {
+        height: 48px;
+        font-size: 0.95rem;
+        padding: 12px 15px;
+    }
+} 

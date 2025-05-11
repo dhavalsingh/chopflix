@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chopflix</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="landing-text-column">
+                <div class="logo-title-wrapper">
+                    <img src="logo.png" alt="Chopflix Logo" class="landing-logo">
+                    <h1>Chopflix</h1>
+                </div>
+                <p class="landing-subtitle">Watch + Cook, one step at a time. <br>Auto-adjust ingredients if you change servings!</p>
+                <p class="landing-explanation">Paste any YouTube recipe link. Chopflix breaks it into steps, showing video clips and ingredients for each step, simplifying your kitchen adventures!</p>
+                <div class="input-area">
+                    <input type="text" id="youtubeUrl" placeholder="Paste Recipe YT Video Link">
+                    <input type="number" id="servings" placeholder="Servings (Optional)" min="1">
+                    <button id="processUrlBtn">Breakdown the Recipe!</button>
+                    <p id="loadingMessageBelowButton" class="loading-info-text"></p>
+                </div>
+            </div>
+            <div class="landing-image-column"></div>
+        </header>
+
+        <div class="main-content">
+            <div id="recipeStepsContainer">
+                <h2>Recipe Steps</h2>
+                <div id="currentStepDisplay">
+                    <p id="stepInstruction">Enter a YouTube recipe URL above to get started.</p>
+                    <div id="ingredientsSection" style="display: none;">
+                        <h3>Ingredients</h3>
+                        <ul id="ingredientsList"></ul>
+                    </div>
+                </div>
+                <div id="servingsNote"></div>
+                <div class="navigation-buttons">
+                    <button id="prevStepBtn" disabled>Previous</button>
+                    <button id="nextStepBtn" disabled>Next</button>
+                </div>
+            </div>
+            <div id="videoPlayerContainer">
+                <!-- YouTube Player will be embedded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
