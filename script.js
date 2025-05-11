@@ -1,5 +1,5 @@
 // Global variables
-const GEMINI_API_KEY_FALLBACK = "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg"; // Renamed for clarity, acts as a fallback
+const GEMINI_API_KEY_FALLBACK = "SAMPLE_KEY"; // Renamed for clarity, acts as a fallback
 
 let player; // YouTube player instance
 let recipeData = {}; // To store the recipe steps and other data from LLM
