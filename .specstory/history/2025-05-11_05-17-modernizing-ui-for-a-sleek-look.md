@@ -6469,3 +6469,112 @@ _**Assistant**_
 
 ---
 
+You're right, that alert shouldn't appear if you've entered a key into the input box, unless that key is *literally* "YOUR_GEMINI_API_KEY". My apologies, there's a slight error in how the API key validation logic is handling the fallback placeholder.
+
+The issue is that the check `apiKey === "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg"` (which is the default placeholder value) is being applied even when you provide that same key via the input field. We should trust the input field more.
+
+I'll adjust the logic in `script.js` inside the `fetchRecipeFromLLM` function:
+1.  It will first check if you've provided a key in the input field.
+2.  If you have, it will use that key. The only case it will then show an alert is if the key you entered is exactly "YOUR\_GEMINI\_API\_KEY".
+3.  If the input field is empty, it will use the `GEMINI_API_KEY_FALLBACK` from the script.
+4.  Then, it will check if this fallback key is one of the known placeholders ("YOUR\_GEMINI\_API\_KEY" or the default "AIzaSy..."). If it is, then it will show the alert.
+
+Here's the code change for `script.js`:
+
+
+---
+
+```diff
+      console.log("Fetching recipe for URL:", youtubeUrl);
+  
+-     let apiKey = geminiApiKeyInput.value.trim();
+-     if (!apiKey) {
+-         apiKey = GEMINI_API_KEY_FALLBACK;
++     let userProvidedApiKey = geminiApiKeyInput.value.trim();
++     let apiKeyToUse;
++     let usingFallback = false;
++ 
++     if (userProvidedApiKey) {
++         apiKeyToUse = userProvidedApiKey;
++     } else {
++         apiKeyToUse = GEMINI_API_KEY_FALLBACK;
++         usingFallback = true;
+      }
+  
+-     if (apiKey === "YOUR_GEMINI_API_KEY" || apiKey === "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg" || !apiKey) { // Check against placeholder or empty
+-         alert("Please enter a valid Google API Key in the input field, or replace the placeholder in script.js.");
++     let showAlert = false;
++     if (!apiKeyToUse) { 
++         showAlert = true;
++     } else if (apiKeyToUse === "YOUR_GEMINI_API_KEY") { 
++         showAlert = true;
++     } else if (usingFallback && apiKeyToUse === "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg") { // Check the specific placeholder only if it's the active fallback
++         showAlert = true;
++     }
++ 
++     if (showAlert) {
++         alert("Please enter a valid Google API Key in the input field, or ensure the fallback key in script.js is valid and not a placeholder.");
+          return null;
+      }
+```
+
+```diff
+      }
+  
+-     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=${apiKey}`;
++     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=${apiKeyToUse}`;
+      
+      const requestBody = {
+```
+
+---
+
+This revised logic should now correctly handle the API key:
+*   If you type any key (even one that happens to match the old placeholder string `AIzaSy...`) into the input field, it will be used, and the alert won't show (unless you type exactly "YOUR\_GEMINI\_API\_KEY").
+*   The alert regarding the specific placeholder `AIzaSy...` will only trigger if the input field is empty *and* the `GEMINI_API_KEY_FALLBACK` in your `script.js` is still set to that specific placeholder.
+
+Could you try again with this updated script? Let me know if it resolves the issue.
+
+---
+
+_**User**_
+
+add the @landing.png in the readme at top
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+Okay, I'll add the `landing.png` image to the top of your `README.md` file.
+
+I'll read the current `README.md`, then prepend the image markdown to its content.
+
+
+---
+
+Read file: README.md
+
+---
+
+Okay, I have the content. Now I'll add the image at the top.
+
+
+---
+
+```diff
++ ![Chopflix Landing Page](landing.png)
++ 
+  # Chopflix - Your YouTube Recipe Co-Pilot
+  
+```
+
+---
+
+
+
+---
+

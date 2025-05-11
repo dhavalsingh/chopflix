@@ -1,3 +1,5 @@
+![Chopflix Landing Page](landing.png)
+
 # Chopflix - Your YouTube Recipe Co-Pilot
 
 Tired of endlessly pausing and rewinding YouTube recipes? Wish you could see the chef's technique while reading the steps? Chopflix syncs video clips with instructions and ingredients for each step. The video plays just for that part, then pauses, letting you cook along effortlessly.
