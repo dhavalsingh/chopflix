@@ -1,5 +1,5 @@
 // Global variables
-const GEMINI_API_KEY = "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg"; // <-- IMPORTANT: REPLACE WITH YOUR ACTUAL API KEY
+const GEMINI_API_KEY = "ADD API KEY HERE"; // <-- IMPORTANT: REPLACE WITH YOUR ACTUAL API KEY
 
 let player; // YouTube player instance
 let recipeData = {}; // To store the recipe steps and other data from LLM
