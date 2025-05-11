@@ -1,5 +1,5 @@
 // Global variables
-const GEMINI_API_KEY_FALLBACK = "SAMPPLE KEY"; // Renamed for clarity, acts as a fallback
+const GEMINI_API_KEY_FALLBACK = "ADD YOUR API KEY HERE"; // Renamed for clarity, acts as a fallback
 
 let player; // YouTube player instance
 let recipeData = {}; // To store the recipe steps and other data from LLM
@@ -214,7 +214,7 @@ function updateNavigationButtons() {
 async function fetchRecipeFromLLM(youtubeUrl) {
     console.log("Fetching recipe for URL:", youtubeUrl);
 
-    let userProvidedApiKey = geminiApiKeyInput.value.trim();
+    let userProvidedApiKey = GEMINI_API_KEY_FALLBACK;
     let apiKeyToUse;
     let usingFallback = false;
 
@@ -230,7 +230,7 @@ async function fetchRecipeFromLLM(youtubeUrl) {
         showAlert = true;
     } else if (apiKeyToUse === "YOUR_GEMINI_API_KEY") { 
         showAlert = true;
-    } else if (usingFallback && apiKeyToUse === "AIzaSyCGTAmZdv-k9rVl68XYFgJps_xSfcLEmVg") { // Check the specific placeholder only if it's the active fallback
+    } else if (usingFallback && apiKeyToUse === "GEMINI_API_KEY_FALLBACK") { // Check the specific placeholder only if it's the active fallback
         showAlert = true;
     }
 
@@ -291,7 +291,7 @@ async function fetchRecipeFromLLM(youtubeUrl) {
 - If you cannot process the video or extract a valid recipe, set the "error" field in the response.`;
 
     const jsonStructureReminderServings = `
-Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable). Dont add any non english characters.IT is very important that the JSON is valid.:
+Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable). Dont add any non english characters. Make sure there is no  Cyrillic characters in the output.IT is very important that the JSON is valid.:
 \\\`\\\`\\\`json
 {
   "recipeTitle": "(Extracted Recipe Name or Video Title)",
@@ -317,7 +317,7 @@ Remember, the JSON output *must* strictly follow this structure (do not add extr
 `;
 
     const jsonStructureReminderNoServings = `
-Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable) Dont add any non english characters. IT is very important that the JSON is valid.:
+Remember, the JSON output *must* strictly follow this structure (do not add extra fields, ensure all listed fields are present unless noted as nullable and not applicable) Dont add any non english characters. Make sure there is no  Cyrillic characters in the output. IT is very important that the JSON is valid.:
 \\\`\\\`\\\`json
 {
   "recipeTitle": "(Extracted Recipe Name or Video Title)",
