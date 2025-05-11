@@ -50,7 +50,7 @@ header.centered-header .landing-image-column {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 500px;
+    max-width: 1000px;
     align-self: stretch; /* Try to match height of text column if possible */
     background-image: url('bg-image.png'); /* YOUR IMAGE */
     background-size: contain;
